@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 // import { Link } from 'react-router';
 import { connect } from 'react-redux';
 
-import AudioDetection from './AudioDetection.js';
+import AudioDetection from './AudioDetection';
 
 import styles from './Home.css';
 import logoImage from '../../resources/logo.png';
@@ -13,7 +13,6 @@ import {
   setMsFirst,
   setMsPrevious,
   setTapBpm,
-  setDetectedBpm,
   clearState,
 } from '../actions/bpmActions';
 
@@ -91,11 +90,9 @@ export default class Home extends Component {
       ? <span><strong>{tapBpmValues[0]}</strong>.<small>{tapBpmValues[1]}</small></span>
       : <span><strong>{tapBpmValues[0]}</strong></span>;
 
-    let detectedBpmValue = <small>No file BPM detected</small>;
-
-    if (detectedBpm) {
-      detectedBpmValue = <span>{detectedBpm}</span>;
-    }
+    const detectedBpmValue = detectedBpm
+      ? <span>{detectedBpm}</span>
+      : <small>No file BPM detected</small>;
 
     return (
       <div>
