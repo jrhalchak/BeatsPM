@@ -1,4 +1,4 @@
-export default function tapReducer(state = {
+export default function bpmReducer(state = {
   count: 0,
   msFirst: 0,
   msPrevious: 0,
@@ -36,6 +36,12 @@ export default function tapReducer(state = {
         msFirst: 0,
         msPrevious: 0,
         tapBpm: 0,
+      };
+    }
+    case 'SET_DETECTED_BPM': {
+      return {
+        ...state,
+        detectedBpm: action.payload,
       };
     }
     default:

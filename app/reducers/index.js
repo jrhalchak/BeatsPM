@@ -2,10 +2,10 @@
 import { combineReducers } from 'redux';
 import { routerReducer as routing } from 'react-router-redux';
 
-import tapReducer from './tapReducer';
+import bpmReducer from './bpmReducer';
 
 const rootReducer = combineReducers({
-  tapReducer,
+  bpmReducer,
   routing
 });
 

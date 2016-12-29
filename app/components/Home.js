@@ -2,8 +2,10 @@
 import React, { Component } from 'react';
 // import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import styles from './Home.css';
 
+import AudioDetection from './AudioDetection.js';
+
+import styles from './Home.css';
 import logoImage from '../../resources/logo.png';
 
 import {
@@ -12,14 +14,14 @@ import {
   setMsPrevious,
   setTapBpm,
   clearState,
-} from '../actions/tapActions';
+} from '../actions/bpmActions';
 
 @connect(store => ({
-  count: store.tapReducer.count,
-  msFirst: store.tapReducer.msFirst,
-  msPrevious: store.tapReducer.msPrevious,
-  tapBpm: store.tapReducer.tapBpm,
-  detectedBpm: store.tapReducer.detectedBpm,
+  count: store.bpmReducer.count,
+  msFirst: store.bpmReducer.msFirst,
+  msPrevious: store.bpmReducer.msPrevious,
+  tapBpm: store.bpmReducer.tapBpm,
+  detectedBpm: store.bpmReducer.detectedBpm,
 }))
 export default class Home extends Component {
   static propTypes = {
@@ -125,6 +127,7 @@ export default class Home extends Component {
               {count} taps
             </div>
             <hr />
+            <AudioDetection />
           </div>
         </div>
       </div>
