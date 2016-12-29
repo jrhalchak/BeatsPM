@@ -3,6 +3,7 @@ export default function bpmReducer(state = {
   msFirst: 0,
   msPrevious: 0,
   tapBpm: 0,
+  detectedBpm: 0,
 }, action: Object) {
   switch (action.type) {
     case 'SET_COUNT': {

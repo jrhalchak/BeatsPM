@@ -13,6 +13,7 @@ import {
   setMsFirst,
   setMsPrevious,
   setTapBpm,
+  setDetectedBpm,
   clearState,
 } from '../actions/bpmActions';
 
@@ -90,7 +91,11 @@ export default class Home extends Component {
       ? <span><strong>{tapBpmValues[0]}</strong>.<small>{tapBpmValues[1]}</small></span>
       : <span><strong>{tapBpmValues[0]}</strong></span>;
 
-    const detectedBpmValue = detectedBpm || <small>No file BPM detected</small>;
+    let detectedBpmValue = <small>No file BPM detected</small>;
+
+    if (detectedBpm) {
+      detectedBpmValue = <span>{detectedBpm}</span>;
+    }
 
     return (
       <div>

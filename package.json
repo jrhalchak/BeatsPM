@@ -166,8 +166,7 @@
     "react-router-redux": "^4.0.7",
     "redux": "^3.6.0",
     "redux-thunk": "^2.1.0",
-    "source-map-support": "^0.4.6",
-    "web-audio-beat-detector": "0.0.5"
+    "source-map-support": "^0.4.6"
   },
   "devEngines": {
     "node": ">=6.x",

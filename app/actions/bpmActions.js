@@ -38,7 +38,7 @@ export function setDetectedBpm(bpm) {
   return {
     type: 'SET_DETECTED_BPM',
     payload: bpm,
-  }
+  };
 }
 
 export default {
