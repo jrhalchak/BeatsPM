@@ -1,0 +1,131 @@
+*, *:before, *:after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+body {
+  background: #43cea2;
+  background-image: linear-gradient(to bottom, #43cea2, #185a9d);
+  background-size: 100% 100%;
+  color: #fefefe;
+  text-align: center;
+  font-family: 'Helvetica-Neue', Helvetica, 'Segoe UI', Arial;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+hr {
+  background: rgba(255,255,255,0.3);
+  border: none;
+  outline: none;
+  height: 1px;
+  margin: 0;
+}
+
+small {
+  color: rgba(255,255,255,0.8);
+}
+
+select {
+  padding: 5px 10px;
+  background: rgba(255,255,255,0.3);
+  border: 1px solid rgba(255,255,255,0.5);
+}
+
+.line-height-1 {
+  line-height: 1;
+}
+
+.margin-0 {
+  margin: 0;
+}
+
+.margin-r-5 {
+  margin-right: 5px;
+}
+
+.pad-h {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.pad-v {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.pad-h-half {
+  padding-left: 7px;
+  padding-right: 7px;
+}
+.pad-v-half {
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+.inset-shadow {
+  box-shadow: inset 0 -50px 50px 0 rgba(0,0,0,0.2);
+}
+
+.text-center {
+  text-align: center;
+}
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
+
+.light-border {
+  border: 1px solid rgba(255,255,255,0.3);
+}
+.light-border-top {
+  border-top: 1px solid rgba(255,255,255,0.3);
+}
+.light-border-right {
+  border-right: 1px solid rgba(255,255,255,0.3);
+}
+.light-border-bottom {
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+}
+.light-border-left {
+  border-left: 1px solid rgba(255,255,255,0.3);
+}
+
+.row:after {
+  clear: both;
+  display: table;
+  width: 100%;
+  content: '';
+}
+.row div {
+  float: left;
+}
+
+/* one item */
+.row div:nth-child(1):nth-last-child(1) {
+	width: 100%;
+}
+
+/* two items */
+.row div:nth-child(1):nth-last-child(2),
+.row div:nth-child(2):nth-last-child(1) {
+	width: 50%;
+}
+
+/* three items */
+.row div:nth-child(1):nth-last-child(3),
+.row div:nth-child(2):nth-last-child(2),
+.row div:nth-child(3):nth-last-child(1) {
+	width: 33.3333%;
+}
+
+/* four items */
+.row div:nth-child(1):nth-last-child(4),
+.row div:nth-child(2):nth-last-child(3),
+.row div:nth-child(3):nth-last-child(2),
+.row div:nth-child(4):nth-last-child(1) {
+	width: 25%;
+}
