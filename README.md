@@ -1,6 +1,8 @@
 # BeatsPM
 A beats-per-minute detector via algorithmic detection and tap-based calculation.
 
+![BeatsPM](screenshot.jpg?raw=true)
+
 ## About
 A cross-platform application using Electron (created with [this boilerplate](https://github.com/chentsulin/electron-react-boilerplate#readme)) for detecting beats-per-minute via the html5 audio api or by calculating time between keyboard taps.
 
