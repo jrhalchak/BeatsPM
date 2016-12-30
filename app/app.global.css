@@ -70,6 +70,10 @@ select {
   margin-right: 5px;
 }
 
+.margin-r-15 {
+  margin-right: 15px;
+}
+
 .pad-h {
   padding-left: 15px;
   padding-right: 15px;

@@ -44,8 +44,8 @@ export default class AudioPlayer extends Component {
         <div className={styles.waveContainer}>
           {this.props.children}
           <progress className={styles.progressOverlay} value={currentVal} max="100" />
+          <input type="range" min="0" max="100" className={styles.slider} onChange={this.handleRangeChange.bind(this)} value={currentVal} />
         </div>
-        <input type="range" min="0" max="100" className={styles.slider} onChange={this.handleRangeChange.bind(this)} value={currentVal} />
       </div>
     );
   }

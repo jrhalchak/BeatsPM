@@ -15,6 +15,7 @@ import {
 @connect()
 export default class AudioDetection extends Component {
   static propTypes = {
+    activeKeyCode: React.PropTypes.number,
     dispatch: React.PropTypes.func,
   }
   constructor(props) {
@@ -29,6 +30,16 @@ export default class AudioDetection extends Component {
     };
   }
   componentDidMount() {
+    function bodyListener(e) {
+      if (e.which !== this.props.activeKeyCode && this.state.audioSrc) {
+        if (this.state.playing) {
+          this.pauseAudio();
+        } else {
+          this.toggleAudio();
+        }
+      }
+    }
+
     this.audioPlayer.addEventListener('timeupdate', () => {
       this.setState({ currentTime: this.audioPlayer.currentTime });
     });
@@ -37,6 +48,9 @@ export default class AudioDetection extends Component {
       this.audioPlayer.currentTime = 0;
       this.setState({ playing: false });
     });
+
+    document.body.removeEventListener('keyup', bodyListener);
+    document.body.addEventListener('keyup', bodyListener.bind(this));
   }
   audioChange(e) {
     const file = e.target.files[0];
@@ -111,7 +125,7 @@ export default class AudioDetection extends Component {
   }
   render() {
     const canvas = this.state.audioSrc
-      ? <canvas ref={ref => this.canvas = ref} className={styles.canvas} width={600} height={100} />
+      ? <canvas ref={ref => this.canvas = ref} className={styles.canvas} width={600} height={120} />
       : null;
 
     return (

@@ -17,10 +17,6 @@ import {
   clearState,
 } from '../actions/bpmActions';
 
-function bodyListener(e) {
-  this.handleKeyPress(e);
-}
-
 function determineBpm() {
   const currentMs = (new Date()).getTime();
   let bpmAverage = 0;
@@ -67,6 +63,10 @@ export default class Home extends Component {
     };
   }
   componentDidMount() {
+    function bodyListener(e) {
+      this.handleKeyPress(e);
+    }
+
     document.body.removeEventListener('keyup', bodyListener);
     document.body.addEventListener('keyup', bodyListener.bind(this));
   }
@@ -86,9 +86,9 @@ export default class Home extends Component {
   handleKeyPress(e) {
     if (e.which === this.state.activeKeyCode) determineBpm.bind(this)();
   }
-  handleTapButton() {
-    determineBpm.bind(this)();
-  }
+  // handleTapButton() {
+  //   determineBpm.bind(this)();
+  // }
   render() {
     const { activeKeyCode, waitTime } = this.state;
     const { count, tapBpm, detectedBpm } = this.props;
@@ -125,7 +125,7 @@ export default class Home extends Component {
               </div>
               <hr />
             </div>
-            <div className="row pad-v text-left">
+            <div className="row">
               <WaitSelector
                 handler={this.handleWaitChange.bind(this)}
                 waitTime={waitTime}
@@ -134,17 +134,13 @@ export default class Home extends Component {
                 handler={this.setKeyCode.bind(this)}
                 activeKeyCode={activeKeyCode}
               />
-              <TapButton
-                handler={this.handleTapButton.bind(this)}
-                activeKeyCode={activeKeyCode}
-              />
             </div>
             <hr />
             <div className="pad-v-half">
               {count} taps
             </div>
             <hr />
-            <AudioDetection />
+            <AudioDetection activeKeyCode={activeKeyCode} />
           </div>
         </div>
       </div>
@@ -152,16 +148,14 @@ export default class Home extends Component {
   }
 }
 
-function TapButton({ handler, activeKeyCode }) {
-  return (
-    <div className="pad-h">
-      <strong className="margin-r-5">Or tap this</strong>
-      <div>
-        <button onClick={() => handler({ which: activeKeyCode })}>Click</button>
-      </div>
-    </div>
-  );
-}
+// function TapButton({ handler, activeKeyCode }) {
+//   return (
+//     <div className="pad-h">
+//       <strong className="margin-r-5">Or tap this</strong>
+//       <button onClick={() => handler({ which: activeKeyCode })}>Click</button>
+//     </div>
+//   );
+// }
 
 function WaitSelector({ handler, waitTime }) {
   function handleChange(e) {
@@ -169,21 +163,19 @@ function WaitSelector({ handler, waitTime }) {
   }
   const waitOptions = [1, 2, 3, 4, 5];
   return (
-    <div className="pad-h">
-      <strong className="margin-r-5">Tap Reset</strong>
-      <div>
-        <select onChange={handleChange}>
-          {waitOptions.map(w => (
-            <option
-              key={`wait-options_${w}`}
-              value={w}
-              selected={w * 1000 === waitTime ? true : null}
-            >
-              {w} Seconds
-            </option>
-          ))}
-        </select>
-      </div>
+    <div className="pad-v pad-h">
+      <strong className="margin-r-15">Tap Reset</strong>
+      <select onChange={handleChange}>
+        {waitOptions.map(w => (
+          <option
+            key={`wait-options_${w}`}
+            value={w}
+            selected={w * 1000 === waitTime ? true : null}
+          >
+            {w} Seconds
+          </option>
+        ))}
+      </select>
     </div>
   );
 }
@@ -203,23 +195,21 @@ function KeycodeSelector({ handler, activeKeyCode }) {
     letterKeyCodes.push(i);
   }
   return (
-    <div className="pad-h">
-      <strong className="margin-r-5">Key Press</strong>
-      <div>
-        <select onChange={handleChange}>
-          {Object.keys(knownKeyCodes).map(k => (
-            <option key={`known-key_${k}`} value={knownKeyCodes[k]} selected={activeKeyCode === k ? true : null}>
-              {k}
-            </option>
-          ))}
-          <option>---</option>
-          {letterKeyCodes.map(k => (
-            <option key={`letter-key_${k}`} value={k} selected={activeKeyCode === k ? true : null}>
-              {String.fromCharCode(k)}
-            </option>
-          ))}
-        </select>
-      </div>
+    <div className="pad-h pad-v light-border-left">
+      <strong className="margin-r-15">Key Press</strong>
+      <select onChange={handleChange}>
+        {Object.keys(knownKeyCodes).map(k => (
+          <option key={`known-key_${k}`} value={knownKeyCodes[k]} selected={activeKeyCode === k ? true : null}>
+            {k}
+          </option>
+        ))}
+        <option>---</option>
+        {letterKeyCodes.map(k => (
+          <option key={`letter-key_${k}`} value={k} selected={activeKeyCode === k ? true : null}>
+            {String.fromCharCode(k)}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }
