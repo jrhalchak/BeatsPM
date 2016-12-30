@@ -1,7 +1,8 @@
 // @flow
 import React, { Component } from 'react';
-// import { Link } from 'react-router';
 import { connect } from 'react-redux';
+
+import { remote } from 'electron';
 
 import AudioDetection from './AudioDetection';
 
@@ -15,6 +16,32 @@ import {
   setTapBpm,
   clearState,
 } from '../actions/bpmActions';
+
+function bodyListener(e) {
+  this.handleKeyPress(e);
+}
+
+function determineBpm() {
+  const currentMs = (new Date()).getTime();
+  let bpmAverage = 0;
+
+  // clearTimeout(this.timer);
+  if ((currentMs - this.props.msPrevious) > this.state.waitTime) {
+    this.clearState();
+  }
+
+  if (this.props.count === 0) {
+    this.props.dispatch(setMsFirst(currentMs));
+    this.props.dispatch(setCount(1));
+  } else {
+    bpmAverage = Number((60000 * this.props.count) / (currentMs - this.props.msFirst)).toFixed(2);
+    this.props.dispatch(setCount(this.props.count + 1));
+    this.props.dispatch(setTapBpm(bpmAverage));
+  }
+
+  this.props.dispatch(setMsPrevious(currentMs));
+  // this.timer = setTimeout(() => this.clearState(), this.state.waitTime * 5);
+}
 
 @connect(store => ({
   count: store.bpmReducer.count,
@@ -40,12 +67,15 @@ export default class Home extends Component {
     };
   }
   componentDidMount() {
-    document.body.addEventListener('keyup', e => {
-      this.handleKeyPress(e);
-    });
+    document.body.removeEventListener('keyup', bodyListener);
+    document.body.addEventListener('keyup', bodyListener.bind(this));
   }
-  handleTap(keyCode) {
+  setKeyCode(keyCode) {
     this.setState({ activeKeyCode: parseInt(keyCode, 10) });
+  }
+  closeWindow() {
+    const win = remote.getCurrentWindow();
+    win.close();
   }
   handleWaitChange(time) {
     this.setState({ waitTime: time });
@@ -54,30 +84,10 @@ export default class Home extends Component {
     this.props.dispatch(clearState());
   }
   handleKeyPress(e) {
-    const currentMs = (new Date()).getTime();
-    let bpmAverage = 0;
-
-    if (e.which !== this.state.activeKeyCode) {
-      return;
-    }
-
-    // clearTimeout(this.timer);
-
-    if ((currentMs - this.props.msPrevious) > this.state.waitTime) {
-      this.clearState();
-    }
-
-    if (this.props.count === 0) {
-      this.props.dispatch(setMsFirst(currentMs));
-      this.props.dispatch(setCount(1));
-    } else {
-      bpmAverage = Number((60000 * this.props.count) / (currentMs - this.props.msFirst)).toFixed(2);
-      this.props.dispatch(setCount(this.props.count + 1));
-      this.props.dispatch(setTapBpm(bpmAverage));
-    }
-
-    this.props.dispatch(setMsPrevious(currentMs));
-    // this.timer = setTimeout(() => this.clearState(), this.state.waitTime * 5);
+    if (e.which === this.state.activeKeyCode) determineBpm.bind(this)();
+  }
+  handleTapButton() {
+    determineBpm.bind(this)();
   }
   render() {
     const { activeKeyCode, waitTime } = this.state;
@@ -87,17 +97,18 @@ export default class Home extends Component {
     const tapBpmValues = bpmHasDemical ? tapBpm.toString().split('.') : [tapBpm];
 
     const tapBpmElement = tapBpmValues.length > 1
-      ? <span><strong>{tapBpmValues[0]}</strong>.<small>{tapBpmValues[1]}</small></span>
-      : <span><strong>{tapBpmValues[0]}</strong></span>;
+      ? <span><strong className="select-all">{tapBpmValues[0]}</strong>.<small>{tapBpmValues[1]}</small></span>
+      : <span><strong className="select-all">{tapBpmValues[0]}</strong></span>;
 
     const detectedBpmValue = detectedBpm
-      ? <span>{detectedBpm}</span>
+      ? <span className="select-all">{detectedBpm}</span>
       : <small>No file BPM detected</small>;
 
     return (
       <div>
         <div className={styles.container}>
           <div className={styles.header}>
+            <button className={styles.closeButton} onClick={this.closeWindow.bind(this)}>×</button>
             <img className={styles.logo} src={logoImage} alt="BeatPM" />
           </div>
           <div className={styles.content}>
@@ -114,13 +125,17 @@ export default class Home extends Component {
               </div>
               <hr />
             </div>
-            <div className="row pad-v">
+            <div className="row pad-v text-left">
               <WaitSelector
                 handler={this.handleWaitChange.bind(this)}
                 waitTime={waitTime}
               />
               <KeycodeSelector
-                handler={this.handleTap.bind(this)}
+                handler={this.setKeyCode.bind(this)}
+                activeKeyCode={activeKeyCode}
+              />
+              <TapButton
+                handler={this.handleTapButton.bind(this)}
                 activeKeyCode={activeKeyCode}
               />
             </div>
@@ -137,6 +152,17 @@ export default class Home extends Component {
   }
 }
 
+function TapButton({ handler, activeKeyCode }) {
+  return (
+    <div className="pad-h">
+      <strong className="margin-r-5">Or tap this</strong>
+      <div>
+        <button onClick={() => handler({ which: activeKeyCode })}>Click</button>
+      </div>
+    </div>
+  );
+}
+
 function WaitSelector({ handler, waitTime }) {
   function handleChange(e) {
     handler(e.target.value * 1000);
@@ -145,17 +171,19 @@ function WaitSelector({ handler, waitTime }) {
   return (
     <div className="pad-h">
       <strong className="margin-r-5">Tap Reset</strong>
-      <select onChange={handleChange}>
-        {waitOptions.map(w => (
-          <option
-            key={`wait-options_${w}`}
-            value={w}
-            selected={w * 1000 === waitTime ? true : null}
-          >
-            {w} Seconds
-          </option>
-        ))}
-      </select>
+      <div>
+        <select onChange={handleChange}>
+          {waitOptions.map(w => (
+            <option
+              key={`wait-options_${w}`}
+              value={w}
+              selected={w * 1000 === waitTime ? true : null}
+            >
+              {w} Seconds
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 }
@@ -177,19 +205,21 @@ function KeycodeSelector({ handler, activeKeyCode }) {
   return (
     <div className="pad-h">
       <strong className="margin-r-5">Key Press</strong>
-      <select onChange={handleChange}>
-        {Object.keys(knownKeyCodes).map(k => (
-          <option key={`known-key_${k}`} value={knownKeyCodes[k]} selected={activeKeyCode === k ? true : null}>
-            {k}
-          </option>
-        ))}
-        <option>---</option>
-        {letterKeyCodes.map(k => (
-          <option key={`letter-key_${k}`} value={k} selected={activeKeyCode === k ? true : null}>
-            {String.fromCharCode(k)}
-          </option>
-        ))}
-      </select>
+      <div>
+        <select onChange={handleChange}>
+          {Object.keys(knownKeyCodes).map(k => (
+            <option key={`known-key_${k}`} value={knownKeyCodes[k]} selected={activeKeyCode === k ? true : null}>
+              {k}
+            </option>
+          ))}
+          <option>---</option>
+          {letterKeyCodes.map(k => (
+            <option key={`letter-key_${k}`} value={k} selected={activeKeyCode === k ? true : null}>
+              {String.fromCharCode(k)}
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 }
