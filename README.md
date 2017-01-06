@@ -10,6 +10,8 @@ A cross-platform application using Electron (created with [this boilerplate](htt
 Tap functionality inspired by (and re-written from) the code from [Rick Reel - all8](http://www.all8.com/tools/bpm.htm); which was inspired by, and rewritten from, [Derek Chilcote-Batto](http://www.mixed.net).
 
 ## Packaging for your OS
+### NOTE:
+**This currently only works in development**. I don't currently have time to fix the packaged version. Run `npm run dev` to start up the app and check it out.
 The `package.json` contains scripts for every platform. 
 
 Run `npm run package-YOUR_OS` where `YOUR_OS` is either `win`, `linux`, or `all`.
